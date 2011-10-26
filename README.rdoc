@@ -1,0 +1,25 @@
+= RFID API client
+
+== Install
+
+  gem 'rfid_api'
+  
+== Configure
+
+  RfidApi.setup do |config|
+    config.username = 'user'
+    config.password = 'password'
+  end
+
+== Usage
+
+  @cards = RfidApi::Card.all
+  
+  @device = RfidApi::Device.create(params[:rfid_api_device])
+  
+  @device = RfidApi::Device.update(params[:id], params[:rfid_api_device])
+  
+  @device = RfidApi::Device.find(params[:id])
+  @device.destroy
+
+Copyright (c) 2011 Aimbulance, released under the MIT license

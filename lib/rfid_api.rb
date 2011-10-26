@@ -1,0 +1,22 @@
+module RfidApi
+  autoload :Client, 'rfid_api/client'
+  autoload :Device, 'rfid_api/device'
+  autoload :Card, 'rfid_api/card'
+  autoload :Event, 'rfid_api/event'
+  
+  mattr_accessor :username
+  @@username = 'user'
+  
+  mattr_accessor :password
+  @@password = 'password'
+  
+  mattr_accessor :format
+  @@format = :json
+  
+  mattr_accessor :api_version
+  @@api_version = 'v1'
+  
+  def self.setup
+    yield self
+  end
+end

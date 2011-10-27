@@ -1,8 +1,11 @@
+require 'active_support/core_ext/module/attribute_accessors'
+
 module RfidApi
   autoload :Client, 'rfid_api/client'
   autoload :Device, 'rfid_api/device'
   autoload :Card, 'rfid_api/card'
   autoload :Event, 'rfid_api/event'
+  autoload :SocialAccount, 'rfid_api/social_account'
   
   mattr_accessor :username
   @@username = 'user'

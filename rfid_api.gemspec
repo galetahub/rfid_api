@@ -22,5 +22,6 @@ Gem::Specification.new do |s|
   
   s.add_dependency("json", "~> 1.6.1")
   s.add_dependency("httparty", "~> 0.8.1")
+  s.add_dependency("activesupport", ">= 0")
   s.add_dependency("activemodel", ">= 0")
 end

@@ -9,8 +9,8 @@ module RfidApi
     
     extend ActiveModel::Naming
     
-    # http://rfidapi.aimbulance.com/api/v1/devices.xml
-    base_uri File.join("http://rfidapi.aimbulance.com", "api", RfidApi.api_version)
+    # https://rfidapi.aimbulance.com/api/v1/devices.xml
+    base_uri File.join("https://rfidapi.aimbulance.com", "api", RfidApi.api_version)
     basic_auth RfidApi.username, RfidApi.password
     format RfidApi.format
     debug_output File.open(Rails.root.join('log', 'rfid_api.log'), "a")

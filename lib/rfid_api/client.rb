@@ -1,7 +1,7 @@
 require "active_model"
 require "httparty"
 require "ostruct"
-require "json"
+require 'yajl/json_gem'
 
 module RfidApi
   class Client < OpenStruct
@@ -95,7 +95,7 @@ module RfidApi
           return body unless body.is_a?(String)
           
           case format
-            when :json then JSON.parse(body)
+            when :json then Yajl::Parser.new.parse(body)
             when :xml then Nokogiri::XML.parse(body)
           end
         end

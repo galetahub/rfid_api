@@ -6,6 +6,7 @@ module RfidApi
   autoload :Card, 'rfid_api/card'
   autoload :Event, 'rfid_api/event'
   autoload :SocialAccount, 'rfid_api/social_account'
+  autoload :Action, 'rfid_api/action'
   
   mattr_accessor :username
   @@username = 'user'

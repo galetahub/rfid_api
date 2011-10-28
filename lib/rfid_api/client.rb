@@ -1,4 +1,4 @@
-require "activemodel"
+require "active_model"
 require "httparty"
 require "ostruct"
 require "json"

@@ -13,7 +13,7 @@ module RfidApi
     base_uri File.join("https://rfidapi.aimbulance.com", "api", RfidApi.api_version)
     basic_auth RfidApi.username, RfidApi.password
     format RfidApi.format
-    debug_output File.open(Rails.root.join('log', 'rfid_api.log'), "a")
+    debug_output RfidApi.logger
     
     delegate :create, :update, :get, :plural_name, :format, :resources, :to => "self.class"
     

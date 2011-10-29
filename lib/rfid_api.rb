@@ -20,6 +20,9 @@ module RfidApi
   mattr_accessor :api_version
   @@api_version = 'v1'
   
+  mattr_accessor :logger
+  @@logger = nil
+  
   def self.setup
     yield self
   end

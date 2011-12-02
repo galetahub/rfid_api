@@ -88,7 +88,8 @@ module RfidApi
         end
         
         def resource(resource, options = {})
-          resources(resource, options).first
+          array = resources(resource, options)
+          array.nil? ? nil : array.first
         end
         
         def post_parse(body)

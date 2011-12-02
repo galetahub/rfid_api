@@ -133,6 +133,14 @@ module RfidApi
       end
     end
     
+    def read_attribute(name)
+      @table[name.to_sym]
+    end
+    
+    def write_attribute(name, value)
+      @table[name.to_sym] = value
+    end
+    
     def datetime(colum_name)
       begin
         DateTime.parse(send(colum_name))

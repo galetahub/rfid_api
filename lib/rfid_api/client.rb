@@ -40,7 +40,8 @@ module RfidApi
       end
       
       def update(id, attributes)
-        resource put("/#{plural_name}/#{id}.#{format}", :body => { singular_name => attributes })
+        response = put("/#{plural_name}/#{id}.#{format}", :body => { singular_name => attributes })
+        resource(response, attributes)
       end
       
       def all(options = {})
@@ -69,26 +70,15 @@ module RfidApi
           @plural_name ||= resource_name.to_s.downcase.pluralize
         end
         
-        def resources(response, options = {})
+        def resources(response, attributes = {})
           if response && [200, 201, 422].include?(response.code)
             body = post_parse(response.parsed_response)
-            
-            case response.code
-              when 200, 201 then 
-                [body].flatten.collect { |item| new(item) }
-              when 422 then
-                [body].flatten.collect do |item| 
-                  record = new(options)
-                  record.errors = item[singular_name]["errors"]
-                  record
-                end
-              else nil
-            end
+            [body].flatten.collect { |item| new(item) }
           end
         end
         
-        def resource(resource, options = {})
-          array = resources(resource, options)
+        def resource(resource, attributes = {})
+          array = resources(resource, attributes)
           array.nil? ? nil : array.first
         end
         

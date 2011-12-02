@@ -77,9 +77,9 @@ module RfidApi
               [body].flatten.collect { |item| new(item) }
             elsif [422].include?(response.code)
               [body].flatten.collect do |item| 
-                item = new(options)
-                #item.errors = body[singular_name]["errors"]
-                item
+                record = new(options)
+                record.errors = item[singular_name]["errors"]
+                record
               end
             else
               nil

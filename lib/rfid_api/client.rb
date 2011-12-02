@@ -70,19 +70,19 @@ module RfidApi
         end
         
         def resources(response, options = {})
-          if response
+          if response && [200, 201, 422].include?(response.code)
             body = post_parse(response.parsed_response)
             
-            if [200, 201].include?(response.code)
-              [body].flatten.collect { |item| new(item) }
-            elsif [422].include?(response.code)
-              [body].flatten.collect do |item| 
-                record = new(options)
-                record.errors = item[singular_name]["errors"]
-                record
-              end
-            else
-              nil
+            case response.code
+              when 200, 201 then 
+                [body].flatten.collect { |item| new(item) }
+              when 422 then
+                [body].flatten.collect do |item| 
+                  record = new(options)
+                  record.errors = item[singular_name]["errors"]
+                  record
+                end
+              else nil
             end
           end
         end

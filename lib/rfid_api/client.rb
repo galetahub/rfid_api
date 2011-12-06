@@ -1,13 +1,14 @@
+require "active_support/core_ext"
 require "active_model"
 require "httparty"
 require "ostruct"
-require 'yajl/json_gem'
+require "yajl/json_gem"
 
 module RfidApi
-  class Client < OpenStruct
+  class Client < ::OpenStruct
     include ::HTTParty
     
-    extend ActiveModel::Naming
+    extend ::ActiveModel::Naming
     
     # https://rfidapi.aimbulance.com/api/v1/devices.xml
     base_uri File.join("https://rfidapi.aimbulance.com", "api", RfidApi.api_version)
@@ -16,6 +17,8 @@ module RfidApi
     debug_output RfidApi.logger
     
     delegate :create, :update, :get, :plural_name, :format, :resources, :to => "self.class"
+    
+    attr_reader :errors
     
     class << self
     
@@ -123,11 +126,18 @@ module RfidApi
       @destroyed == true
     end
     
+    def valid?
+      errors.empty?
+    end
+    
     def errors
       @errors ||= ActiveModel::Errors.new(self)
     end
     
     def errors=(attributes)
+      puts "errors"
+      puts attributes.inspect
+      
       attributes.each do |key, value|
         [value].flatten.each { |message| errors.add(key, message) }
       end
@@ -147,7 +157,6 @@ module RfidApi
       rescue Exception => e
         nil
       end
-    end
-      
+    end      
   end
 end

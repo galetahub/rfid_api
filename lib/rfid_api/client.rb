@@ -18,7 +18,7 @@ module RfidApi
     
     delegate :create, :update, :get, :plural_name, :format, :resources, :to => "self.class"
     
-    attr_reader :errors
+    attr_writer :destroyed
     
     class << self
     
@@ -56,7 +56,9 @@ module RfidApi
       end
       
       def destroy(id)
-        resource delete("/#{plural_name}/#{id}.#{format}")
+        record = resource( delete("/#{plural_name}/#{id}.#{format}") )
+        record.destroyed = (record && record.valid?)
+        record
       end
       
       def model_name
@@ -80,8 +82,8 @@ module RfidApi
           end
         end
         
-        def resource(resource, attributes = {})
-          array = resources(resource, attributes)
+        def resource(response, attributes = {})
+          array = resources(response, attributes)
           array.nil? ? nil : array.first
         end
         
@@ -93,6 +95,14 @@ module RfidApi
             when :xml then Nokogiri::XML.parse(body)
           end
         end
+    end
+    
+    def initialize(hash = nil)
+      if hash && (hash[:errors] || hash['errors'])
+        self.errors = (hash.delete(:errors) || hash.delete('errors'))
+      end
+      
+      super(hash)
     end
     
     def to_key
@@ -108,10 +118,7 @@ module RfidApi
     end
     
     def destroy
-      unless new_record?
-        self.class.destroy(_id)
-        @destroyed = true
-      end
+      self.class.destroy(_id) unless new_record?
     end
     
     def new_record?
@@ -119,11 +126,11 @@ module RfidApi
     end
     
     def persisted?
-      !(new_record? || destroyed?)
+      !(new_record? || destroyed?) && valid?
     end
     
     def destroyed?
-      @destroyed == true
+      @destroyed === true
     end
     
     def valid?
@@ -135,9 +142,6 @@ module RfidApi
     end
     
     def errors=(attributes)
-      puts "errors"
-      puts attributes.inspect
-      
       attributes.each do |key, value|
         [value].flatten.each { |message| errors.add(key, message) }
       end

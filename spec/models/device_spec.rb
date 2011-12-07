@@ -28,7 +28,16 @@ describe RfidApi::Device do
     end
   end
   
-  context "create" do
+  it "should return nil if RFID service not available" do
+    id = "4e312bafc546615929000001"
+    FakeWeb.register_uri(:get, File.join(rfid_url, "devices", "#{id}.json"), 
+      :body => "Error", :status => ["500", "Service not available"])
+    
+    device = RfidApi::Device.find(id)
+    device.should be_nil
+  end
+  
+  context "create/update/destroy" do
     before(:each) do
       @attrs = device_attrs("title" => "Test device")
       @attrs.delete_if {|key, value| ["_id", "created_at", "updated_at", "relays"].include?(key) } 
@@ -43,6 +52,7 @@ describe RfidApi::Device do
       device.title.should == @attrs['title']
       device.to_param.should_not be_blank
       device.should_not be_new_record
+      device.should be_persisted
     end
     
     it "should not create new device with invalid params" do
@@ -57,6 +67,30 @@ describe RfidApi::Device do
       device.title.should == @attrs['title']
       device.latitude.should == @attrs['latitude']
       device.errors.should_not be_empty
+      device.should_not be_valid
+      device.should_not be_persisted
+    end
+    
+    it "should update device by id" do
+      id = "4eddfb5dc546612e14000063"
+      
+      FakeWeb.register_uri(:put, File.join(rfid_url, "devices", "#{id}.json"), 
+        :body => '{"created_at":"2011-12-06T13:24:13+02:00","latitude":0.0,"secret_token":"sfoYxCgnYkCuNvZCpgxH","title":"Update","updated_at":"2011-12-06T13:24:13+02:00","_id":"4eddfb5dc546612e14000063","longitude":0.0}')
+      
+      device = RfidApi::Device.update(id, :title => "Update")
+      device.title.should == "Update"
+      device.should be_valid
+      device.should be_persisted
+    end
+    
+    it "should destroy device by id" do
+      id = "4eddfb5dc546612e14000063"
+      
+      FakeWeb.register_uri(:delete, File.join(rfid_url, "devices", "#{id}.json"), 
+        :body => '{"created_at":"2011-12-06T13:24:13+02:00","latitude":0.0,"secret_token":"sfoYxCgnYkCuNvZCpgxH","title":"Noname","updated_at":"2011-12-06T13:24:13+02:00","_id":"4eddfb5dc546612e14000063","longitude":0.0}')
+      
+      device = RfidApi::Device.destroy(id)
+      device.should be_destroyed
     end
   end
 end

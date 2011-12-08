@@ -31,7 +31,7 @@ describe RfidApi::Device do
   it "should return nil if RFID service not available" do
     id = "4e312bafc546615929000001"
     FakeWeb.register_uri(:get, File.join(rfid_url, "devices", "#{id}.json"), 
-      :body => "Error", :status => ["500", "Service not available"])
+      :body => '{"error":{"message":"Some error","info":"Some error"}}', :status => ["500", "Service not available"])
     
     device = RfidApi::Device.find(id)
     device.should be_nil
